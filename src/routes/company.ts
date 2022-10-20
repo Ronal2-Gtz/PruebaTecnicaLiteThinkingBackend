@@ -11,11 +11,14 @@ import { findCompanyById, validateFields } from "../middlewares/db-validators";
 
 const router = express.Router();
 
-router.get("/:id", getCompany);
+router.get("/:id", [
+  check('id', 'Id is invalid').isMongoId(),
+  check('id').custom(findCompanyById),
+  validateFields], getCompany);
 
 router.get("/", getCompanies);
 
-router.post("/",[
+router.post("/", [
   check('name', 'The name is required').not().isEmpty(),
   check('address', 'The address is required').not().isEmpty(),
   check('nit', 'The nit is required').not().isEmpty(),
@@ -23,16 +26,16 @@ router.post("/",[
   validateFields
 ], addCompany);
 
-router.put("/:id",[
+router.put("/:id", [
   check('id', 'Id is invalid').isMongoId(),
   check('id').custom(findCompanyById),
   validateFields
-] ,updateCompany);
+], updateCompany);
 
 router.delete("/:id", [
   check('id', 'Id is invalid').isMongoId(),
   check('id').custom(findCompanyById),
   validateFields
-],deleteCompany);
+], deleteCompany);
 
 export default router;
