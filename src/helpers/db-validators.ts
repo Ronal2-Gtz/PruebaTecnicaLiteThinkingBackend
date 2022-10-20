@@ -1,17 +1,6 @@
-import { Request, Response, NextFunction } from "express";
-import { validationResult } from 'express-validator'
 import Company from "../model/CompanySchema";
 import User from "../model/UserSchema";
 
-const validateFields = (req: Request, res: Response, next: NextFunction): void => {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-        res.status(404).json(errors)
-        return
-    }
-
-    next()
-}
 
 const findCompanyById = async (id: string): Promise<void> => {
     const company = await Company.findById(id)
@@ -30,7 +19,6 @@ const emailExists = async (email: string) => {
 }
 
 export {
-    validateFields,
     findCompanyById,
     emailExists
 }

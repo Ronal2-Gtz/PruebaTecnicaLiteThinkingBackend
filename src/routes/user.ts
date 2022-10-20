@@ -1,7 +1,8 @@
 import express from "express";
 import { addUser, getUser } from "../controllers/user";
-import { emailExists, findCompanyById, validateFields } from "../middlewares/db-validators";
+import {  validateFields } from "../middlewares/validateFields";
 import { check } from "express-validator";
+import { emailExists, findCompanyById } from "../helpers/db-validators";
 
 const router = express.Router();
 

@@ -1,8 +1,12 @@
 import { Request, Response } from "express";
 import Company from '../model/CompanySchema'
+import { UserType } from "../model/UserSchema";
 
+type IGetUserAuthInfoRequest  = Request & {
+  user: UserType
+}
 
-const getCompany = async (req: Request, res: Response): Promise<void> => {
+const getCompany = async (req: IGetUserAuthInfoRequest, res: Response): Promise<void> => {
   const id = req.params.id
 
   try {
