@@ -10,19 +10,21 @@ import { dbConnection } from './database/config';
 env.config();
 
 const PORT = process.env.PORT;
-const COMPANY_PATH = '/api/company'
-const USER_PATH = '/api/user'
-const AUTH_PATH = '/api/auth'
-const INVENTORY_PATH = '/api/inventory'
+const PATHS = {
+  COMPANY_PATH: '/api/company',
+  USER_PATH: '/api/user',
+  AUTH_PATH: '/api/auth',
+  INVENTORY_PATH: '/api/inventory'
+}
 
 const app = express()
 
 app.use(express.json())
 app.use(cors())
-app.use(AUTH_PATH, authRouter)
-app.use(COMPANY_PATH, companyRouter)
-app.use(INVENTORY_PATH, inventoryRouter)
-app.use(USER_PATH, userRouter)
+app.use(PATHS.AUTH_PATH, authRouter)
+app.use(PATHS.COMPANY_PATH, companyRouter)
+app.use(PATHS.INVENTORY_PATH, inventoryRouter)
+app.use(PATHS.USER_PATH, userRouter)
 
 dbConnection()
 
