@@ -25,6 +25,11 @@ const CompanySchema = new  Schema({
         type: Number,
         require: [true, 'The cell phone number is required']
     },
+    userId: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    }
 })
 
 export default model<CompanyType>("Company", CompanySchema);

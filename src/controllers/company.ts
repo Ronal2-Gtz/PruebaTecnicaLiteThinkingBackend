@@ -2,14 +2,13 @@ import { Request, Response } from "express";
 import Company from '../model/CompanySchema'
 import { UserType } from "../model/UserSchema";
 
-type IGetUserAuthInfoRequest  = Request & {
+type IGetUserAuthInfoRequest = Request & {
   user: UserType
 }
 
-const getCompany = async (req: IGetUserAuthInfoRequest, res: Response): Promise<void> => {
-  const id = req.params.id
-
+const getCompany = async (req: Request, res: Response): Promise<void> => {
   try {
+    const { id } = req.params
     const company = await Company.findById(id)
     res.json({
       company
@@ -19,14 +18,16 @@ const getCompany = async (req: IGetUserAuthInfoRequest, res: Response): Promise<
       err: error,
     });
   }
-
+  
 };
 
-const getCompanies = async (_req: Request, res: Response): Promise<void> => {
+const getCompanies = async (req: Request, res: Response): Promise<void> => {
+  const { id } = req.params
+  console.log('entro', id)
   try {
     const [total, companies] = await Promise.all([
-      Company.countDocuments({}),
-      Company.find({})
+      Company.countDocuments({userId: id}),
+      Company.find({userId:id})
     ])
 
     res.json({
@@ -40,20 +41,20 @@ const getCompanies = async (_req: Request, res: Response): Promise<void> => {
   }
 };
 
-const addCompany = async (req: Request, res: Response): Promise<void> => {
+const addCompany = async (req: IGetUserAuthInfoRequest, res: Response): Promise<void> => {
   try {
     const { name, address, nit, phoneNumber } = req.body
     const companyDB = await Company.findOne({ nit })
 
     if (companyDB) {
       res.status(404).json({
-        err: `The company ${companyDB.name} already exists`,
+        err: `The company ${companyDB.name} already exists, please add new NIT`,
       });
 
       return
     }
 
-    const company = new Company({ name, address, nit, phoneNumber })
+    const company = new Company({ name, address, nit, phoneNumber, userId: req.user._id })
     await company.save()
     res.json({
       message: "Company create",
@@ -68,11 +69,9 @@ const addCompany = async (req: Request, res: Response): Promise<void> => {
 };
 
 const updateCompany = async (req: Request, res: Response): Promise<void> => {
-
-  const { id } = req.params
-  const { _id, nit, ...companyUpdate } = req.body
-
   try {
+    const { id } = req.params
+    const { _id, nit, ...companyUpdate } = req.body
     const company = await Company.findByIdAndUpdate(id, companyUpdate)
     res.json({
       message: "Company update",
@@ -83,14 +82,11 @@ const updateCompany = async (req: Request, res: Response): Promise<void> => {
       err: error,
     });
   }
-
-
 };
 
-const deleteCompany = async(req: Request, res: Response): Promise<void> => {
-  const { id } = req.params
-
+const deleteCompany = async (req: Request, res: Response): Promise<void> => {
   try {
+    const { id } = req.params
     const company = await Company.findByIdAndDelete(id)
     res.json({
       message: "Company delete",

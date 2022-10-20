@@ -3,9 +3,8 @@ import User from "../model/UserSchema";
 import bcryptjs from 'bcryptjs'
 
 const getUser = async (req: Request, res: Response): Promise<void> => {
-    const id = req.params.id
-
     try {
+        const { id } = req.params
         const user = await User.findById(id)
         res.json({
             user

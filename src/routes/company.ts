@@ -21,7 +21,7 @@ router.get("/:id", [
   check('id').custom(findCompanyById),
   validateFields], getCompany);
 
-router.get("/", getCompanies);
+router.get("/user/:id", getCompanies);
 
 router.post("/", [
   validateJwt,
