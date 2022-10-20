@@ -1,29 +1,102 @@
 import { Request, Response } from "express";
+import Company from '../model/CompanySchema'
+import { UserType } from "../model/UserSchema";
 
-const getCompany = (_req: Request, res: Response): void => {
-  res.json({
-    msg: "Fetching all company in get one",
-  });
+type IGetUserAuthInfoRequest = Request & {
+  user: UserType
+}
+
+const getCompany = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params
+    const company = await Company.findById(id)
+    res.json({
+      company
+    });
+  } catch (error) {
+    res.status(404).json({
+      err: error,
+    });
+  }
+  
 };
-const getCompanies = (_req: Request, res: Response): void => {
-  res.json({
-    msg: "Fetching all company in get all",
-  });
+
+const getCompanies = async (req: Request, res: Response): Promise<void> => {
+  const { id } = req.params
+  console.log('entro', id)
+  try {
+    const [total, companies] = await Promise.all([
+      Company.countDocuments({userId: id}),
+      Company.find({userId:id})
+    ])
+
+    res.json({
+      total,
+      companies
+    })
+  } catch (error) {
+    res.status(404).json({
+      err: error,
+    });
+  }
 };
-const addCompany = (_req: Request, res: Response): void => {
-  res.json({
-    msg: "Fetching all company in post ",
-  });
+
+const addCompany = async (req: IGetUserAuthInfoRequest, res: Response): Promise<void> => {
+  try {
+    const { name, address, nit, phoneNumber } = req.body
+    const companyDB = await Company.findOne({ nit })
+
+    if (companyDB) {
+      res.status(404).json({
+        err: `The company ${companyDB.name} already exists, please add new NIT`,
+      });
+
+      return
+    }
+
+    const company = new Company({ name, address, nit, phoneNumber, userId: req.user._id })
+    await company.save()
+    res.json({
+      message: "Company create",
+      company
+    });
+  } catch (error) {
+    res.status(404).json({
+      err: error,
+    });
+  }
+
 };
-const updateCompany = (_req: Request, res: Response): void => {
-  res.json({
-    msg: "Fetching all company in put ",
-  });
+
+const updateCompany = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params
+    const { _id, nit, ...companyUpdate } = req.body
+    const company = await Company.findByIdAndUpdate(id, companyUpdate)
+    res.json({
+      message: "Company update",
+      company
+    });
+  } catch (error) {
+    res.status(404).json({
+      err: error,
+    });
+  }
 };
-const deleteCompany = (_req: Request, res: Response): void => {
-  res.json({
-    msg: "Fetching all company in delete ",
-  });
+
+const deleteCompany = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params
+    const company = await Company.findByIdAndDelete(id)
+    res.json({
+      message: "Company delete",
+      company
+    });
+  } catch (error) {
+    res.status(404).json({
+      err: error,
+    });
+  }
 };
 
 export { getCompany, getCompanies, addCompany, updateCompany, deleteCompany };
