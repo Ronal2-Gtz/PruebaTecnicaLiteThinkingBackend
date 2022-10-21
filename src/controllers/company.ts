@@ -18,16 +18,32 @@ const getCompany = async (req: Request, res: Response): Promise<void> => {
       err: error,
     });
   }
-  
 };
 
-const getCompanies = async (req: Request, res: Response): Promise<void> => {
-  const { id } = req.params
-  console.log('entro', id)
+const getAllCompanies = async (_req: Request, res: Response): Promise<void> => {
   try {
     const [total, companies] = await Promise.all([
-      Company.countDocuments({userId: id}),
-      Company.find({userId:id})
+      Company.countDocuments({}),
+      Company.find({})
+    ])
+
+    res.json({
+      total,
+      companies
+    })
+  } catch (error) {
+    res.status(404).json({
+      err: error,
+    });
+  }
+};
+
+const getCompanies = async (req: IGetUserAuthInfoRequest, res: Response): Promise<void> => {
+  const user = req.user
+  try {
+    const [total, companies] = await Promise.all([
+      Company.countDocuments({ userId: user._id }),
+      Company.find({ userId: user._id })
     ])
 
     res.json({
@@ -99,4 +115,4 @@ const deleteCompany = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export { getCompany, getCompanies, addCompany, updateCompany, deleteCompany };
+export { getCompany, getCompanies, addCompany, updateCompany, deleteCompany, getAllCompanies };
