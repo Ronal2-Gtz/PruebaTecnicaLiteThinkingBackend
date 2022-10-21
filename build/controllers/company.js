@@ -23,7 +23,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteCompany = exports.updateCompany = exports.addCompany = exports.getCompanies = exports.getCompany = void 0;
+exports.getAllCompanies = exports.deleteCompany = exports.updateCompany = exports.addCompany = exports.getCompanies = exports.getCompany = void 0;
 const CompanySchema_1 = __importDefault(require("../model/CompanySchema"));
 const getCompany = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -40,13 +40,30 @@ const getCompany = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.getCompany = getCompany;
-const getCompanies = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    console.log('entro', id);
+const getAllCompanies = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const [total, companies] = yield Promise.all([
-            CompanySchema_1.default.countDocuments({ userId: id }),
-            CompanySchema_1.default.find({ userId: id })
+            CompanySchema_1.default.countDocuments({}),
+            CompanySchema_1.default.find({})
+        ]);
+        res.json({
+            total,
+            companies
+        });
+    }
+    catch (error) {
+        res.status(404).json({
+            err: error,
+        });
+    }
+});
+exports.getAllCompanies = getAllCompanies;
+const getCompanies = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = req.user;
+    try {
+        const [total, companies] = yield Promise.all([
+            CompanySchema_1.default.countDocuments({ userId: user._id }),
+            CompanySchema_1.default.find({ userId: user._id })
         ]);
         res.json({
             total,
@@ -62,7 +79,7 @@ const getCompanies = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 exports.getCompanies = getCompanies;
 const addCompany = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { name, address, nit, phoneNumber } = req.body;
+        const { name, address, nit, phone } = req.body;
         const companyDB = yield CompanySchema_1.default.findOne({ nit });
         if (companyDB) {
             res.status(404).json({
@@ -70,7 +87,7 @@ const addCompany = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             });
             return;
         }
-        const company = new CompanySchema_1.default({ name, address, nit, phoneNumber, userId: req.user._id });
+        const company = new CompanySchema_1.default({ name, address, nit, phone, userId: req.user._id });
         yield company.save();
         res.json({
             message: "Company create",

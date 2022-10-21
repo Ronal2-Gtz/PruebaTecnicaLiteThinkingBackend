@@ -35,6 +35,7 @@ const validateJwt = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
         next();
     }
     catch (error) {
+        console.log(error);
         res.status(404).json('invalid token');
     }
 });

@@ -44,7 +44,6 @@ exports.getInventory = getInventory;
 const getInventories = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { companyId } = req.params;
-        console.log(companyId);
         const [total, inventories] = yield Promise.all([
             InventorySchema_1.default.countDocuments({ companyId: companyId }),
             InventorySchema_1.default.find({ companyId: companyId })
