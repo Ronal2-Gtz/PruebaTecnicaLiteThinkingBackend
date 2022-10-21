@@ -15,7 +15,7 @@ const CompanySchema = new mongoose_1.Schema({
         require: [true, 'The nit is required'],
         unique: true
     },
-    phoneNumber: {
+    phone: {
         type: Number,
         require: [true, 'The cell phone number is required']
     },

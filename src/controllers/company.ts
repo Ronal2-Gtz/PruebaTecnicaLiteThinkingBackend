@@ -59,7 +59,7 @@ const getCompanies = async (req: IGetUserAuthInfoRequest, res: Response): Promis
 
 const addCompany = async (req: IGetUserAuthInfoRequest, res: Response): Promise<void> => {
   try {
-    const { name, address, nit, phoneNumber } = req.body
+    const { name, address, nit, phone } = req.body
     const companyDB = await Company.findOne({ nit })
 
     if (companyDB) {
@@ -70,7 +70,7 @@ const addCompany = async (req: IGetUserAuthInfoRequest, res: Response): Promise<
       return
     }
 
-    const company = new Company({ name, address, nit, phoneNumber, userId: req.user._id })
+    const company = new Company({ name, address, nit, phone, userId: req.user._id })
     await company.save()
     res.json({
       message: "Company create",

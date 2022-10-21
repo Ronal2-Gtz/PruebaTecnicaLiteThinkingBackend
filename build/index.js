@@ -13,17 +13,19 @@ const cors_1 = __importDefault(require("cors"));
 const config_1 = require("./database/config");
 dotenv_1.default.config();
 const PORT = process.env.PORT;
-const COMPANY_PATH = '/api/company';
-const USER_PATH = '/api/user';
-const AUTH_PATH = '/api/auth';
-const INVENTORY_PATH = '/api/inventory';
+const PATHS = {
+    COMPANY_PATH: '/api/company',
+    USER_PATH: '/api/user',
+    AUTH_PATH: '/api/auth',
+    INVENTORY_PATH: '/api/inventory'
+};
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
-app.use(AUTH_PATH, auth_1.default);
-app.use(COMPANY_PATH, company_1.default);
-app.use(INVENTORY_PATH, inventory_1.default);
-app.use(USER_PATH, user_1.default);
+app.use(PATHS.AUTH_PATH, auth_1.default);
+app.use(PATHS.COMPANY_PATH, company_1.default);
+app.use(PATHS.INVENTORY_PATH, inventory_1.default);
+app.use(PATHS.USER_PATH, user_1.default);
 (0, config_1.dbConnection)();
 app.listen(PORT, () => {
     console.log(`Sever running on port ${PORT}`);

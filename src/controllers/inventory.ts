@@ -20,9 +20,8 @@ const getInventory = async (req: Request, res: Response): Promise<void> => {
 const getInventories = async (req: Request, res: Response): Promise<void> => {
     try {
         const { companyId } = req.params
-        console.log(companyId)
         const [total, inventories] = await Promise.all([
-            Inventory.countDocuments({companyId: companyId}),
+            Inventory.countDocuments({ companyId: companyId }),
             Inventory.find({ companyId: companyId })
         ])
         res.json({
@@ -94,14 +93,14 @@ const deleteInventory = async (req: Request, res: Response): Promise<void> => {
         const { id } = req.params
         const inventory = await Inventory.findByIdAndDelete(id)
         res.json({
-          message: "Inventory delete",
-           inventory
+            message: "Inventory delete",
+            inventory
         });
-      } catch (error) {
+    } catch (error) {
         res.status(404).json({
-          err: error,
+            err: error,
         });
-      }
+    }
 }
 
 

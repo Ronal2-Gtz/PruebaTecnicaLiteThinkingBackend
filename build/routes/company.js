@@ -18,7 +18,8 @@ router.get("/:id", [
     (0, express_validator_1.check)('id').custom(db_validators_1.findCompanyById),
     validateFields_1.validateFields
 ], company_1.getCompany);
-router.get("/user/:id", company_1.getCompanies);
+router.get("/", [validateJwt_1.validateJwt, validateRole_1.isAdminRole], company_1.getCompanies);
+router.get("/public/all/companies", company_1.getAllCompanies);
 router.post("/", [
     validateJwt_1.validateJwt,
     validateRole_1.isAdminRole,

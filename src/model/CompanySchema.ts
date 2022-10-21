@@ -1,4 +1,4 @@
-import {Schema, model, Document }  from 'mongoose'
+import { Schema, model, Document } from 'mongoose'
 
 type CompanyType = Document & {
     name: string
@@ -7,21 +7,21 @@ type CompanyType = Document & {
     cellPhonbeNumber: number
 }
 
-const CompanySchema = new  Schema({
-    name:{
+const CompanySchema = new Schema({
+    name: {
         type: String,
         require: [true, 'The name is required']
     },
-    address:{
+    address: {
         type: String,
         require: [true, 'The address is required']
     },
-    nit:{
+    nit: {
         type: String,
         require: [true, 'The nit is required'],
         unique: true
     },
-    phoneNumber:{
+    phone: {
         type: Number,
         require: [true, 'The cell phone number is required']
     },
@@ -33,4 +33,4 @@ const CompanySchema = new  Schema({
 })
 
 export default model<CompanyType>("Company", CompanySchema);
-export type {CompanyType}
+export type { CompanyType }
