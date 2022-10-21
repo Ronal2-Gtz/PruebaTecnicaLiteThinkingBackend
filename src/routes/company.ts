@@ -3,12 +3,13 @@ import { check } from "express-validator";
 import {
   addCompany,
   deleteCompany,
+  getAllCompanies,
   getCompanies,
   getCompany,
   updateCompany,
 } from "../controllers/company";
 import { findCompanyById } from "../helpers/db-validators";
-import {  validateFields } from "../middlewares/validateFields";
+import { validateFields } from "../middlewares/validateFields";
 import { validateJwt } from "../middlewares/validateJwt";
 import { isAdminRole } from "../middlewares/validateRole";
 
@@ -21,7 +22,9 @@ router.get("/:id", [
   check('id').custom(findCompanyById),
   validateFields], getCompany);
 
-router.get("/user/:id", getCompanies);
+router.get("/", [validateJwt, isAdminRole], getCompanies);
+
+router.get("/public/all/companies", getAllCompanies);
 
 router.post("/", [
   validateJwt,
